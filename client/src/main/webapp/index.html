@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Request and Response GUI</title>
+
+<!---------------------------------- CSS -------------------------------------->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link href="Content/footer-distributed-with-address-and-phones.css"
+	rel="stylesheet" />
+<link href="Content/bootstrap.css" rel="stylesheet" />
+<link href="Content/animate.css" rel="stylesheet" />
+<link href="Content/add_styling.css" rel="stylesheet" />
+<link
+	href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+	rel="stylesheet">
+<!---------------------------------- END CSS -------------------------------------->
+
+
+<!---------------------------------- ANGULAR JS -------------------------------------->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+<script>
+	var app = angular.module('webServApp', []);
+
+	app.controller('projectCtrl', function($scope, $http) {
+		$scope.getProjects = function() {
+			$http.get("/client/v1/project/list").success(function(response) {
+				$scope.projects = response;
+			});
+		};
+
+		//loadTestName is a variable that wil lstore the name of a project
+		$scope.loadTestName = "Default Name";
+
+		//lets us sort the values in the saved load test projects table
+		$scope.sortField = 'name';
+		$scope.reverse = true;
+	});
+</script>
+<!---------------------------------- END ANGULAR JS -------------------------------------->
+
+</head>
+<body ng-app="webServApp">
+
+	<!-- TOP NAVBAR-->
+	<div class="container-fluid">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+
+					<a class="navbar-brand" href="#"><i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;Request
+						and Response System</a>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<!-- END TOP NAVBAR-->
+	<br />
+	<br />
+	<br />
+	<br />
+	<!-- MAIN CONTENT -->
+	<div class="animated zoomIn" ng-controller="projectCtrl"
+		class="container-fluid">
+		<div class="row">
+			<div class="col-md-12 cols" id="main-content">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-offset-4 col-md-4">
+							<ul class="nav nav-tabs">
+								<li><a href="#new-project" data-toggle="tab">New
+										Project</a></li>
+								<li ng-click="getProjects()"><a href="#saved-projects"
+									data-toggle="tab">Saved Projects</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="row">
+						<div id="myTabContent" class="tab-content">
+							<div
+								class="well col-md-offset-2 col-md-8 tab-pane fade active in"
+								id="new-project">
+								<p class="lead">
+									<i class="fa fa-folder"></i>&nbsp;&nbsp;New Project
+								</p>
+								<form action="#">
+									<div class="form-group">
+										<div class="input-group">
+											<div class="input-group-addon">Project Name</div>
+											<input class="form-control" type="text" name="projectName"
+												placeholder="" id="projectName" />
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="input-group">
+											<div class="input-group-addon">URL</div>
+											<input class="form-control" type="text" name="url"
+												placeholder="E.g. http://localhost:8080" id="url" />
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="input-group">
+											<div class="input-group-addon">Total Requests</div>
+											<input class="form-control" type="text" name="requests"
+												placeholder="Must be a number" id="requests" />
+										</div>
+									</div>
+								</form>
+								<button class="btn btn-default btn-md" id="save">
+									<i class="fa fa-floppy-o"></i>&nbsp;&nbsp;&nbsp;Save
+								</button>
+								<button class="btn btn-info btn-md" id="start">
+									<i class="fa fa-caret-square-o-right"></i>&nbsp;&nbsp;&nbsp;Start
+								</button>
+								<b><i id="status-msg">&nbsp;&nbsp;&nbsp;&nbsp;</i></b> <br /> <br />
+								<div id="progressbar-2"></div>
+							</div>
+							<div class="tab-pane fade" id="saved-projects">
+								<div class="col-md-5 well">
+									<p class="lead">
+										<i class="fa fa-files-o"></i>&nbsp;&nbsp;Saved Load Test
+										Projects
+									</p>
+									<table id="projectTable"
+										class="table table-striped table-hover">
+										<thead>
+											<tr>
+												<th></th>
+												<th><a href=""
+													ng-click="sortField = 'projectname'  ; reverse = !reverse">Project
+												</a></th>
+												<th><a href=""
+													ng-click="sortField = 'requestCount'  ; reverse = !reverse ">Requests
+												</a></th>
+												<th><a href=""
+													ng-click="sortField = 'date'   ; reverse = !reverse">Load
+														Test Date</a></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr
+												ng-repeat="project in projects | orderBy: sortField : reverse">
+												<td><input name="loadTestItem" value="" type="checkbox" /></td>
+												<td>{{project.projectname}}</td>
+												<td>{{project.requestCount}}</td>
+												<td>{{project.date}}</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="row">
+										<div class="col-md-offset-5 col-md-7">
+											<button class="btn btn-danger">
+												<i class="fa fa-times-circle"></i>&nbsp;&nbsp;&nbsp;Delete
+											</button>
+											<button class="btn btn-primary">
+												<i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;Compare
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-7">
+									<!------------------------ FUSIONCHART ----------------------------------->
+									<a id="chart-container" class="list-group-item">
+									<!------------------------ FUSIONCHART -----------------------------------> 
+									</a> <br />
+									<div class=" row">
+										<div class="col-md-offset-2 col-md-10">
+											<div class="form-group">
+												<div class="input-group">
+													<div class="input-group-addon">Load Test Name</div>
+													<input ng-model="loadTestName" class="form-control"
+														type="text" name="loadTestName" placeholder=""
+														id="load-name" />
+												</div>
+												<br />
+												<div class="row">
+													<div class="col-md-offset-8 col-md-3">
+														<button class="btn btn-info">
+															<i class="fa fa-floppy-o"></i>&nbsp;&nbsp;&nbsp;Save
+															Results
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- END MAIN CONTENT -->
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<!--FOOTER -->
+	<div class="row">
+		<footer class="footer-distributed" style="margin-bottom: -100px;">
+			<div class="footer-left">
+				<h3>CS594 Systems Engineering</h3>
+				<p class="footer-links">
+					<a href="#">Home</a> · <a href="#">About</a> · <a href="#">Faq</a>
+					· <a href="#">Contact</a>
+				</p>
+				<p class="footer-company-name">California State University, Los
+					Angeles 2016</p>
+			</div>
+			<div class="footer-center">
+				<div>
+					<i class="fa fa-map-marker"></i>
+					<p>
+						<span>CSULA</span> <span>ASCB 132 </span> <span>5151 State
+							University Dr</span> <span>Los Angeles, CA 90032-8530</span>
+					</p>
+				</div>
+				<div>
+					<i class="fa fa-phone"></i>
+					<p>(323) 343-3901</p>
+				</div>
+				<div>
+					<i class="fa fa-envelope"></i>
+					<p>
+						<a href="mailto:support@company.com">support@cs594.com</a>
+					</p>
+				</div>
+			</div>
+			<div class="footer-right">
+				<p class="footer-company-about">
+					<span>About the Team</span> We specialize in Web Systems and
+					Services.
+				</p>
+				<div class="footer-icons">
+					<a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+						class="fa fa-twitter"></i></a> <a href="#"><i
+						class="fa fa-linkedin"></i></a> <a href="#"><i
+						class="fa fa-github"></i></a>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+	<!---------------------------------  JAVASCRIPT ------------------------------------>
+	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	<script src="Scripts/fusioncharts.js"></script>
+	<script src="Scripts/fusioncharts.charts.js"></script>
+	<script src="Scripts/fusioncharts-jquery-plugin.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<script src="Scripts/bootstrap.min.js"></script>
+	<script src="Scripts/custom_cs594.js"></script>
+	<!--------------------------------- END JAVASCRIPT------------------------------ -->
+
+</body>
+</html>
