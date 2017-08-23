@@ -18,7 +18,11 @@ client
 ======
 * implements the load-test GUI
 
+<<<<<<< HEAD
 How to run GUI for load test
+=======
+How to run GUI for our load test
+>>>>>>> b5acd2c5d3a9e75413ec2d1b6c5d1d79d4d9f858
 --------------------------------
 1. `mvn clean install`
 2. `mvn org.apache.tomcat.maven:tomcat7-maven-plugin:run`
